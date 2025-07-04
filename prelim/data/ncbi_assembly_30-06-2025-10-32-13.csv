@@ -1,0 +1,106 @@
+biosampleaccn,organism,cas13subtype,sequencingtechnology,ftppath_genbank
+SAMN10691118,Apibacter raozihei (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/004/014/855/GCA_004014855.1_ASM401485v1
+SAMN08913567,Bergeyella cardium (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/914/665/GCA_009914665.1_ASM991466v1
+SAMN34037267,Bergeyella cardium (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/029/991/125/GCA_029991125.1_ASM2999112v1
+SAMN32105916,Bergeyella cardium (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/030/012/605/GCA_030012605.1_ASM3001260v1
+SAMN32105916,Bergeyella cardium (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/030/012/605/GCA_030012605.2_ASM3001260v2
+SAMN06289145,Capnocytophaga canimorsus (CFB group bacteria),cas13b,PacBio; Illumina MiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/302/445/GCA_002302445.1_ASM230244v1
+SAMN06289152,Capnocytophaga canimorsus (CFB group bacteria),cas13b,PacBio; Illumina MiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/302/565/GCA_002302565.1_ASM230256v1
+SAMN06289144,Capnocytophaga canimorsus (CFB group bacteria),cas13b,PacBio; Illumina MiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/302/655/GCA_002302655.1_ASM230265v1
+SAMEA104210801,Capnocytophaga canimorsus (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/900/638/435/GCA_900638435.1_57675_B01
+SAMN06754876,Capnocytophaga cynodegmi (CFB group bacteria),cas13b,PacBio; Illumina MiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/302/475/GCA_002302475.1_ASM230247v1
+SAMN06289146,Capnocytophaga stomatis (CFB group bacteria),cas13b,PacBio; Illumina MiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/302/635/GCA_002302635.1_ASM230263v1
+SAMN10343188,Chryseobacterium carnipullorum (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/815/695/GCA_003815695.1_ASM381569v1
+SAMN10343187,Chryseobacterium carnipullorum (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/815/855/GCA_003815855.1_ASM381585v1
+SAMN10343182,Chryseobacterium lactis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/815/755/GCA_003815755.1_ASM381575v1
+SAMN10343183,Chryseobacterium lactis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/815/875/GCA_003815875.1_ASM381587v1
+SAMN12859598,Chryseobacterium sp. (CFB group bacteria),cas13b,Illumina HiSeq; PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/008/831/505/GCA_008831505.1_ASM883150v1
+SAMEA104200672,Chryseobacterium taihuense (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/900/683/625/GCA_900683625.1_56279_G01
+SAMN07139315,Elizabethkingia miricola (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/938/095/GCA_009938095.1_ASM993809v1
+SAMN33591060,Elizabethkingia miricola (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/029/277/485/GCA_029277485.1_ASM2927748v1
+SAMN31358077,Elizabethkingia miricola (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/029/873/335/GCA_029873335.1_ASM2987333v1
+SAMN28590660,Elizabethkingia miricola (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/044/360/725/GCA_044360725.1_ASM4436072v1
+SAMN30623800,Empedobacter stercoris (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/025/244/765/GCA_025244765.1_ASM2524476v1
+SAMN05000968,Flavobacterium columnare (CFB group bacteria),cas13b,"PacBio, Illumina, Sanger",ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/677/395/GCA_001677395.1_ASM167739v1
+SAMN06184581,Flavobacterium columnare (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/936/395/GCA_001936395.1_ASM193639v1
+SAMN13705423,Flavobacterium columnare (CFB group bacteria),cas13b,PacBio; Illumina HiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/014/844/255/GCA_014844255.1_ASM1484425v1
+SAMN47059527,Flavobacterium columnare (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/049/177/265/GCA_049177265.1_ASM4917726v1
+SAMN04386100,Flavobacterium covae (CFB group bacteria),cas13b,454; Illumina; PacBio; Miseq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/534/645/GCA_001534645.1_ASM153464v1
+SAMN04487986,Flavobacterium covae (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/641/185/GCA_001641185.1_ASM164118v1
+SAMN28596590,Flavobacterium covae (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/042/427/455/GCA_042427455.1_ASM4242745v1
+SAMN18133624,Flavobacterium endoglycinae (CFB group bacteria),cas13b,Illumina; PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/017/352/115/GCA_017352115.1_ASM1735211v1
+SAMN25131779,Flavobacterium jumunjinense (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/021/650/975/GCA_021650975.2_ASM2165097v2
+SAMD00078003,Labilibaculum antarcticum (CFB group bacteria),cas13b,PacBio RS II,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/356/295/GCA_002356295.1_ASM235629v1
+SAMN04270979,Myroides odoratimimus (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/481/655/GCA_001481655.1_ASM148165v1
+SAMN11047481,Myroides odoratimimus (CFB group bacteria),cas13b,PacBio RSII; Illumina NextSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/004/337/635/GCA_004337635.1_ASM433763v1
+SAMN02603919,Psychroflexus torquis ATCC 700755 (CFB group bacteria),cas13b,Sanger dideoxy sequencing; 454,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/153/485/GCA_000153485.2_ASM15348v2
+SAMN04505864,Pedobacter cryoconitis (CFB group bacteria),cas13b,PacBio RS II with P6-C4 chemistry,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/590/605/GCA_001590605.1_ASM159060v1
+SAMN39216401,Riemerella anatipestifer (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/035/666/175/GCA_035666175.1_ASM3566617v1
+SAMN41998628,Riemerella anatipestifer (CFB group bacteria),cas13b,Illumina; PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/040/498/315/GCA_040498315.1_ASM4049831v1
+SAMN43911957,Riemerella anatipestifer (CFB group bacteria),cas13b,Illumina HiSeq; PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/042/467/385/GCA_042467385.1_ASM4246738v1
+SAMN40623457,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/045/348/095/GCA_045348095.1_ASM4534809v1
+SAMN45156075,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/046/101/805/GCA_046101805.1_ASM4610180v1
+SAMN45156076,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/046/116/525/GCA_046116525.1_ASM4611652v1
+SAMN45934160,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio; Illumina,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/046/603/645/GCA_046603645.1_ASM4660364v1
+SAMN10230162,Riemerella anatipestifer (CFB group bacteria),cas13b,Illumina MiSeq; PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/026/016/565/GCA_026016565.1_ASM2601656v1
+SAMN09907746,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/015/291/805/GCA_015291805.1_ASM1529180v1
+SAMN19113859,Riemerella anatipestifer RA-YM (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/019/297/815/GCA_019297815.1_ASM1929781v1
+SAMN03761967,Riemerella anatipestifer (CFB group bacteria),cas13b,Illumina; PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/025/185/GCA_002025185.1_ASM202518v1
+SAMEA4063029,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/900/186/945/GCA_900186945.1_48903_E01
+SAMN04394637,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/670/765/GCA_001670765.2_ASM167076v2
+SAMN12026949,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/006/385/095/GCA_006385095.1_ASM638509v1
+SAMN13111529,Riemerella anatipestifer (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/496/935/GCA_009496935.1_ASM949693v1
+SAMN07840095,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/753/935/GCA_002753935.1_ASM275393v1
+SAMN07836928,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/753/955/GCA_002753955.1_ASM275395v1
+SAMN07840081,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/753/975/GCA_002753975.1_ASM275397v1
+SAMN07840090,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/015/GCA_002754015.1_ASM275401v1
+SAMN07840091,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/035/GCA_002754035.1_ASM275403v1
+SAMN07840092,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/055/GCA_002754055.1_ASM275405v1
+SAMN07840094,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/075/GCA_002754075.1_ASM275407v1
+SAMN07840097,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/095/GCA_002754095.1_ASM275409v1
+SAMN07831761,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/115/GCA_002754115.1_ASM275411v1
+SAMN07836904,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/135/GCA_002754135.1_ASM275413v1
+SAMN07836934,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/754/155/GCA_002754155.1_ASM275415v1
+SAMN07315161,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/892/555/GCA_002892555.1_ASM289255v1
+SAMN07315160,Porphyromonas gingivalis ATCC 33277 (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/892/575/GCA_002892575.1_ASM289257v1
+SAMN07315163,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/892/595/GCA_002892595.1_ASM289259v1
+SAMN18805464,Porphyromonas gingivalis (CFB group bacteria),cas13b,Illumina HiSeq; PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/141/745/GCA_018141745.1_ASM1814174v1
+SAMN18805165,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio; Illumina HiSeq,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/141/765/GCA_018141765.1_ASM1814176v1
+SAMN18753385,Porphyromonas gingivalis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/141/805/GCA_018141805.1_ASM1814180v1
+SAMN35301467,Porphyromonas gingivalis (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/030/144/345/GCA_030144345.1_ASM3014434v1
+SAMN35563277,Porphyromonas gingivalis (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/030/252/365/GCA_030252365.1_ASM3025236v1
+SAMD00060990,Porphyromonas gingivalis TDC60 (CFB group bacteria),cas13b,Sanger; Roche 454,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/270/225/GCA_000270225.1_ASM27022v1
+SAMN03366764,Porphyromonas gingivalis (CFB group bacteria),cas13b,454; Sanger,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/263/815/GCA_001263815.1_ASM126381v1
+SAMN03372093,Porphyromonas gingivalis AJW4 (CFB group bacteria),cas13b,454; Sanger,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/274/615/GCA_001274615.1_ASM127461v1
+SAMN03653671,Porphyromonas gingivalis A7A1-28 (CFB group bacteria),cas13b,454; Sanger,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/444/325/GCA_001444325.1_ASM144432v1
+SAMN25263445,Prevotella communis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/022/024/095/GCA_022024095.1_ASM2202409v1
+SAMN25263446,Prevotella communis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/022/024/075/GCA_022024075.1_ASM2202407v1
+SAMN25263443,Prevotella communis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/022/024/135/GCA_022024135.1_ASM2202413v1
+SAMN25263444,Prevotella communis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/022/024/115/GCA_022024115.1_ASM2202411v1
+SAMN25263441,Prevotella communis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/022/024/175/GCA_022024175.1_ASM2202417v1
+SAMN02603988,Prevotella intermedia 17 (CFB group bacteria),cas13b,Sanger,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/261/025/GCA_000261025.1_ASM26102v1
+SAMD00034934,Prevotella intermedia (CFB group bacteria),cas13b,PacBio RS II,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/548/195/GCA_001548195.1_ASM154819v1
+SAMN04529095,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/953/935/GCA_001953935.1_ASM195393v1
+SAMN04529094,Prevotella intermedia ATCC 25611 = DSM 20706 (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/953/955/GCA_001953955.1_ASM195395v1
+SAMN07955957,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/535/GCA_002763535.1_ASM276353v1
+SAMN07956007,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/575/GCA_002763575.1_ASM276357v1
+SAMN07955952,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/715/GCA_002763715.1_ASM276371v1
+SAMN07956008,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/745/GCA_002763745.1_ASM276374v1
+SAMN07956010,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/785/GCA_002763785.1_ASM276378v1
+SAMN07955950,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/845/GCA_002763845.1_ASM276384v1
+SAMN07980911,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/955/GCA_002763955.1_ASM276395v1
+SAMN07980959,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/763/975/GCA_002763975.1_ASM276397v1
+SAMN07955960,Prevotella intermedia (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/265/025/GCA_003265025.1_ASM326502v1
+SAMN33716996,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio; Illumina,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/029/369/685/GCA_029369685.1_ASM2936968v1
+SAMN25144067,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/024/328/725/GCA_024328725.2_ASM2432872v2
+SAMN15546933,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/020/091/445/GCA_020091445.1_ASM2009144v1
+SAMN14645711,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/012/851/305/GCA_012851305.1_ASM1285130v1
+SAMN16451200,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/288/975/GCA_018288975.1_ASM1828897v1
+SAMN16451192,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/289/335/GCA_018289335.1_ASM1828933v1
+SAMN11642307,Parabacteroides distasonis (CFB group bacteria),cas13b,PacBio RSII,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/006/149/185/GCA_006149185.1_ASM614918v1
+SAMN30929146,Elizabethkingia anophelis (CFB group bacteria),cas13b,PacBio Sequel,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/025/449/135/GCA_025449135.1_ASM2544913v1
+SAMN31358076,Elizabethkingia anophelis (CFB group bacteria),cas13b,Illumina NovaSeq; PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/029/873/315/GCA_029873315.1_ASM2987331v1
+SAMN04875535,Elizabethkingia anophelis (CFB group bacteria),cas13b,PacBio,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/277/995/GCA_002277995.1_ASM227799v1
+SAMN03996277,Elizabethkingia anophelis (CFB group bacteria),cas13b,PacBio; Illumina,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/951/395/GCA_002951395.1_ASM295139v1
+SAMN03996278,Elizabethkingia anophelis (CFB group bacteria),cas13b,PacBio; Illumina,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/951/455/GCA_002951455.1_ASM295145v1
+SAMN04875535,Elizabethkingia anophelis (CFB group bacteria),cas13b,PacBio; Illumina,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/277/995/GCA_002277995.2_ASM227799v2
