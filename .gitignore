@@ -1,0 +1,16 @@
+tools/pgap-2025-05-06.build7983/
+tools/CRISPRCasFinder/
+
+# Ignore everything inside CRISPRidentify-1.2.1
+tools/CRISPRidentify-1.2.1/*
+# do NOT ignore components/ and CRISPRidentify.py
+!tools/CRISPRidentify-1.2.1/components/
+!tools/CRISPRidentify-1.2.1/CRISPRidentify.py
+
+
+prelim/file_list.all.latest.tsv
+tools/CRISPRidentify-1.2.1/tools/CRISPRcasIdentifier/CRISPRcasIdentifier/trained_models.tar.gz
+tools/CRISPRidentify-1.2.1/tools/CRISPRcasIdentifier/CRISPRcasIdentifier/HMM_sets.tar.gz
+
+modules/db_credentials.json
+

@@ -464,31 +464,45 @@ def db_clean_duplicates() -> None:
                 creds['user'], creds['password'], creds['host'], creds['port'], database)
     engine = create_engine(pg_url, pool_pre_ping=True, echo=False)
 
-    sql_query = """
-        WITH to_delete AS (
+
+    # Connect to the database and execute the query
+    with engine.begin() as conn:
+        # Step 1: Create the `to_delete` CTE as a temporary table
+        conn.execute(sql_text("""
+            CREATE TEMP TABLE to_delete AS
             SELECT c.array_id
-            FROM cas13b_crisprs AS c
+            FROM cas13b_crisprs c
             JOIN LATERAL (
                 SELECT MIN(array_id) AS keep_id
                 FROM cas13b_crisprs
-                WHERE (biosampleaccn, contig_id, arraystart, arrayend, arraylen,
-                       avgrepeatlen, avgspacerlen, number_of_spacers, dist_to_cas13b,
-                       orientation, category, score, filter)
-                      = (c.biosampleaccn, c.contig_id, c.arraystart, c.arrayend, c.arraylen,
-                         c.avgrepeatlen, c.avgspacerlen, c.number_of_spacers, c.dist_to_cas13b,
-                         c.orientation, c.category, c.score, c.filter)
+                WHERE biosampleaccn      IS NOT DISTINCT FROM c.biosampleaccn
+                  AND contig_id          IS NOT DISTINCT FROM c.contig_id
+                  AND arraystart         IS NOT DISTINCT FROM c.arraystart
+                  AND arrayend           IS NOT DISTINCT FROM c.arrayend
+                  AND arraylen           IS NOT DISTINCT FROM c.arraylen
+                  AND avgrepeatlen       IS NOT DISTINCT FROM c.avgrepeatlen
+                  AND avgspacerlen       IS NOT DISTINCT FROM c.avgspacerlen
+                  AND number_of_spacers  IS NOT DISTINCT FROM c.number_of_spacers
+                  AND dist_to_cas13b     IS NOT DISTINCT FROM c.dist_to_cas13b
+                  AND orientation        IS NOT DISTINCT FROM c.orientation
+                  AND category           IS NOT DISTINCT FROM c.category
+                  AND score              IS NOT DISTINCT FROM c.score
+                  AND filter             IS NOT DISTINCT FROM c.filter
             ) k ON TRUE
             WHERE c.array_id <> k.keep_id
-        );
+        """))
 
-        DELETE FROM spacer_table
-        WHERE array_id IN (SELECT array_id FROM to_delete);
+        # Step 2: Delete from spacer_table
+        conn.execute(sql_text("""
+            DELETE FROM spacer_table
+            WHERE array_id IN (SELECT array_id FROM to_delete)
+            RETURNING 1
+        """))
 
-        DELETE FROM cas13b_crisprs
-        WHERE array_id IN (SELECT array_id FROM to_delete);
-    """
-    # Connect to the database and execute the query
-    with engine.connect() as conn:
-        # Remove duplicates 
-        conn.execute(sql_text(sql_query))
-        print("Duplicates removed from cas13b_crisprs and spacer_table.")
+        # Step 3: Delete from cas13b_crisprs
+        conn.execute(sql_text("""
+            DELETE FROM cas13b_crisprs
+            WHERE array_id IN (SELECT array_id FROM to_delete)
+            RETURNING 1
+        """))        
+        print("Duplicates removed from cas13b_crisprs and spacer_table successfully.")

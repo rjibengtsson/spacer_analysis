@@ -253,16 +253,12 @@ def main():
 
     ### Step 6: Upload the results to the database
     # data_file = outdir / "cas13b_contigs.csv"
-    data_file = outdir / "test.csv"
-    upload_result(f"{data_file}", outdir)
+    # data_file = outdir / "test.csv"
+    # upload_result(f"{data_file}", outdir)
 
 
     ### Step 7: Clean database to remove duplicates
     db_utils.db_clean_duplicates()
     
-
-
-
-
 if __name__ == "__main__":
     main()
