@@ -207,6 +207,22 @@ def get_contig(fasta_file: Path, contig_id: str, output_dir: Path) -> Path:
 
 
 
+def unzip_files(directory: Path) -> None:
+    """
+    Unzips all .gz files in the specified directory.
+    
+    Args:
+        directory (Path): The directory containing the .gz files.
+    """
+    for file in directory.glob("*.gz"):
+        try:
+            # Unzip the file
+            subprocess.run(["gunzip", str(file)], check=True)
+            print(f"Unzipped {file.name}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error unzipping {file.name}: {e}")
+
+
 
 @dataclass
 class CasContig:
@@ -291,11 +307,8 @@ class CasContig:
         return None
 
 
-
-        
-
     @classmethod
-    def get_cas_contig(cls, contig_id: str, fasta_file: Path) -> Path:
+    def get_cas_contig(cls, contig_id: str, fasta_file: Path, outdir:Path) -> Path:
         """
         Extracts the contig sequence from the FASTA file based on the contig ID.
         
@@ -305,9 +318,8 @@ class CasContig:
         Returns:
             contig fasta file path (Path) if successful, None otherwise.
         """
-        bioaccession = os.path.basename(fasta_file).split('.')[0]
-        output_dir = fasta_file.parent      
-        contig_file = output_dir / f"{bioaccession}_{contig_id}.fna"
+        bioaccession = os.path.basename(fasta_file).split('.')[0] 
+        contig_file = outdir / f"{bioaccession}.fna"
 
         for record in SeqIO.parse(fasta_file, "fasta"):
             if record.id == contig_id:

@@ -991,9 +991,9 @@ class FastaOutputArrayMaker:
 
             if list_crisprs:
 
-                with open(result_path_repeats, "w") as fr:
-                    with open(result_path_spacers, "w") as fs:
-                        with open(result_path_arrays, "w") as fa:
+                with open(result_path_repeats, "a") as fr:
+                    with open(result_path_spacers, "a") as fs:
+                        with open(result_path_arrays, "a") as fa:
                             non_array_strand_class = list(self.non_array_data["Strand"].keys())[i]
                             for index, array in enumerate(list_crisprs):
 

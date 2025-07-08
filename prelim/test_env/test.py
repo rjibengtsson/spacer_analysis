@@ -2,6 +2,8 @@ import sys
 from pathlib import Path
 import os
 import uuid
+from sqlalchemy import create_engine, text
+from datetime import datetime
 
 # Add the directory containing your other modules
 target_dir = Path(__file__).resolve().parent.parent.parent
@@ -18,43 +20,55 @@ from modules.crispr_detecion import CrisprDetection
 from modules.analysis_utils import ArrayCandidate
 
 
-storage = Path("/spacers_db/genomes")
-df = db_utils.read_table_from_db(f"{storage}/cas13b_contigs.csv")
+def retrieve_data_from_db(outdir: Path, query: str, database_name: str = 'cas13_bacterial_db') -> pd.DataFrame:
+    # connect to the database
+    creds = db_utils.get_credentials()['db_credentials']
+    database = database_name
+
+    pg_url = "postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}".format(
+                    creds['user'], creds['password'], creds['host'], creds['port'], database)
+
+    engine = create_engine(pg_url, pool_pre_ping=True, echo=False)
+
+    # Retrieve data from the database
+    # with engine.connect() as conn:
+    with engine.connect() as conn:
+        df = pd.read_sql(text(query), conn.execution_options(stream_results=True))
+
+    timestamp = datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
+
+    out_file = f"{outdir}/db_query_result_{timestamp}.csv"
+
+    # write dataframe to csv
+    df.to_csv(out_file, index=False)
+
+    return df
 
 
-for index, row in df.iterrows():
-    # check if the cas_gene is not NaN or empty
-    if pd.isna(row['cas_gene']) or row['cas_gene'] == "":
-        pass
-    else:
-        # Run data extraction
-        bioaccession = row['biosample_accession']
-        gbff_file = storage / f"{bioaccession}.gbff"
-        gff_file = storage / f"{bioaccession}.gff"
-        result_folder = Path(f"/{storage}/{bioaccession}_crispridentify/{bioaccession}")
+def main():
+    outdir = Path(__file__).resolve().parent
+    # # query = """
+    # #     SELECT *
+    # #     FROM cas13b_crisprs
+    # #     WHERE biosampleaccn IN ('SAMN02463902', 'SAMEA4362427', 'SAMEA104307710',
+    # #            'SAMN03284263', 'SAMN03284264', 'SAMN03284261', 'SAMN03284262',
+    # #            'SAMN02463748', 'SAMN00216833', 'SAMN03197167', 'SAMEA104224811',
+    # #            'SAMN19926200', 'SAMN31809581', 'SAMN31809580'); 
+    # # """
+    # # query_results_df = retrieve_data_from_db(outdir, query)
 
-        candidates = ArrayCandidate.complie_crispr_arrays(result_folder, gbff_file, gff_file, storage)
-        filter_candidates = ArrayCandidate.filter_candidates(candidates, avg_dr_len=36, avg_spacer_len=30)
+    # samples_list = Path("arry_id.list")
+    # with open(samples_list, 'r') as f:
+    #     samples = [line.strip() for line in f if line.strip()]
+        
+    #     df = db_utils.query_db_with_list(samples, 'spacer_table', 'array_id')
+    #     subset = df[df['type'] == 'spacer']
+    #     subset.to_csv(outdir / 'preliminary_spacer_seqs.csv', index=False)
 
-        complete_candidates = []
-
-        for c in filter_candidates:
-            print(c.biosample_accn)
-            candidate = ArrayCandidate.get_spacer_dr_seq(c, result_folder)
-            # print(candidate)
-            if candidate is not None:
-                complete_candidates.append(candidate)
-
-
-        # Get the CasContig class instance for the given gbff and gff files
-        # This will extract the contig_id and other relevant information
-        cls = CasContig.get_cas_info(gbff_file, gff_file)
+    #     # df.to_csv(outdir / 'biosampleaccn_query_results.csv', index=False)
+    
+    # print(datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
 
 
-        array_df = db_utils.generate_array_table(complete_candidates, cls)
-        spacer_df = db_utils.generate_spacer_table(complete_candidates)
-
-
-        db_utils.upload_arraytable_to_sql(array_df, "cas13_bacterial_db", "cas13b_crisprs")
-        db_utils.upload_spacertable_to_sql(spacer_df, "cas13_bacterial_db", "spacer_table")
-
+if __name__ == "__main__":
+    main()

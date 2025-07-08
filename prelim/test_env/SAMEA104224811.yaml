@@ -1,6 +1,0 @@
-fasta:
-  class: File
-  location: /spacers_db/genomes/SAMEA104224811.fna
-submol:
-  class: File
-  location: /spacers_db/genomes/SAMEA104224811_submol.yaml

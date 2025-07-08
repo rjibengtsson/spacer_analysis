@@ -1,6 +1,7 @@
 import subprocess
 import os, sys
 import uuid
+import re
 import typing as t
 from typing import Optional
 from pathlib import Path
@@ -190,15 +191,25 @@ class ArrayCandidate:
             bioaccession = result_folder.name.split("_")[0]
             # Read the summary file into a DataFrame
             summary_file = result_folder / "Summary.csv"
+            
+            # Check if the summary file exists
+            if not summary_file.exists():
+                print(f"Summary file {summary_file} does not exist in {result_folder}.", file=sys.stderr)
+                return None
+            
             summary_df = cls.read_summary_file(summary_file)
             instances = []
             cascontig = cls.get_cas_contig(gbff, gff)
             for index, row in summary_df.iterrows():
+                if row['Category'] == "Possible" and summary_df['Category'].str.contains("Bona-fide").any():
+                    region_id = int(row['Region index']) - 1
+                else:
+                    region_id = int(row['Region index'])
                 # Create an ArrayCandidate instance for each CRISPR array found
                 cls_instance = cls(
                     instance_id=cls.get_instance_id(),
                     biosample_accn=bioaccession,
-                    array_id=f"{row['ID']}",
+                    array_id=region_id,
                     arry_start=row['Start'],
                     arry_end=row['End'],
                     strand=row['Strand'],
@@ -221,17 +232,16 @@ class ArrayCandidate:
             summary_df = cls.read_summary_file(summary_file)
             instances = []
             cascontig = cls.get_cas_contig(gbff, gff)
-            contig_id = str(cascontig.contig_id).split(".")[0]
-            # subselect only rows that match the contig_id
-            summary_df = summary_df[summary_df['Name'].str.startswith(contig_id)]
-            
             for index, row in summary_df.iterrows():
+                if row['Category'] == "Possible" and summary_df['Category'].str.contains("Bona-fide").any():
+                    region_id = int(row['Region index']) - 1
+                else:
+                    region_id = int(row['Region index'])
                 # Create an ArrayCandidate instance for each CRISPR array found
                 cls_instance = cls(
                     instance_id=cls.get_instance_id(),
                     biosample_accn=bioaccession,
-                    name=row['Name'],
-                    array_id=f"{row['ID']}",
+                    array_id=region_id,
                     arry_start=row['Start'],
                     arry_end=row['End'],
                     strand=row['Strand'],
@@ -244,7 +254,7 @@ class ArrayCandidate:
                     category=row['Category'],
                     score=row['Score']
                 )
-                instances.append(cls_instance)
+                instances.append(cls_instance)            
             
             if not result_folder.exists():
                 print(f"Result folder {result_folder} does not exist. CRISPRidentify may not have run successfully.", file=sys.stderr)
@@ -254,8 +264,8 @@ class ArrayCandidate:
 
 
     @classmethod
-    def is_within_len_range(cls, avg_len: int) -> bool:
-        return avg_len - 2  <= avg_len <= avg_len + 2
+    def is_within_len_range(cls, value: int, avg_len: int) -> bool:
+        return avg_len - 3  <= value <= avg_len + 3
 
 
 
@@ -263,8 +273,8 @@ class ArrayCandidate:
     def filter_candidates(
         cls, 
         candidates: t.List['ArrayCandidate'], 
-        avg_dr_len, 
-        avg_spacer_len, 
+        avg_dr_len: int = 36, 
+        avg_spacer_len: int = 30, 
         min_spacers: int = 3, 
         dist_to_cas: int = 20000
         ) -> t.List['ArrayCandidate']:
@@ -273,8 +283,10 @@ class ArrayCandidate:
         
         Args:
             candidates (List[ArrayCandidate]): List of ArrayCandidate instances to filter.
+            avg_dr_len (int): Average length of direct repeats to filter candidates.
+            avg_spacer_len (int): Average length of spacers to filter candidates.
+            dist_to_cas (int): Maximum distance to the nearest Cas gene for a candidate to be considered valid.
             min_spacers (int): Minimum number of spacers required for a candidate to be considered valid.
-            min_length (int): Minimum length required for a candidate to be considered valid.
         
         Returns:
             List[ArrayCandidate]: Filtered list of ArrayCandidate instances.
@@ -284,15 +296,15 @@ class ArrayCandidate:
             passed = (
                 c.num_spacers >= min_spacers and
                 c.dist_to_cas < dist_to_cas and
-                cls.is_within_len_range(c.avg_spacer_length) and
-                cls.is_within_len_range(c.avg_repeat_length)
+                cls.is_within_len_range(c.avg_spacer_length, avg_spacer_len) and
+                cls.is_within_len_range(c.avg_repeat_length, avg_dr_len)
             )
             c.filter = "PASSED" if passed else "FAILED"
         return candidates
 
 
     @classmethod
-    def read_fasta_file(cls, contig_id: str, fasta_file: Path) -> t.List[str]:
+    def read_fasta_file(cls, contig_id: str, fasta_file: Path) -> str:
         """
         Read a FASTA file and return a list of sequences.
         
@@ -300,17 +312,19 @@ class ArrayCandidate:
             fasta_file (Path): Path to the FASTA file containing spacer sequences.
         
         Returns:
-            List[str]: List of spacer sequences read from the FASTA file.
+            str: Extracted sequences read from the FASTA file with matching contig id.
         """
         if not fasta_file.exists():
             print(f"FASTA file {fasta_file} does not exist.", file=sys.stderr)
             return []
-
-        sequences = []
+        
         for record in SeqIO.parse(fasta_file, "fasta"):
-            if record.id.startswith(contig_id):
-                sequences.append(str(record.seq))
-        return sequences        
+            pattern = re.compile(rf"{contig_id}")
+            match = pattern.match(record.id)
+            if match:
+                return str(record.seq)
+        return None       
+
 
 
     @classmethod
@@ -325,43 +339,51 @@ class ArrayCandidate:
         Returns:
             List[str]: List of spacer sequences.
         """
-
-        # Check if the output folder was created
-        if result_folder.exists():            
-            # Get spacer sequences
-            spacer_fasta = result_folder / "Spacers.fasta"
-            contig_id = f"CRISPR_{candidate.array_id}_"
-            spacerseq = cls.read_fasta_file(contig_id, spacer_fasta)
-            candidate.spacerseq = spacerseq
-
-            # Get direct repeat sequences
-            dr_fasta = result_folder / "Repeats.fasta"
-            contig_id = f"CRISPR_{candidate.array_id}_"
-            drseq = cls.read_fasta_file(contig_id, dr_fasta)
-            candidate.drseq = drseq
-
-            return candidate
-
-        # If the result folder does not exist, check the parent directory
-        elif not result_folder.exists():
-            result_folder = result_folder.parent
-
-            # Get spacer sequences
-            spacer_fasta = result_folder / "Complete_spacer_dataset.fasta"
-            contig_id = f"{candidate.name}_CRISPR_{candidate.array_id}_"
-            spacerseq = cls.read_fasta_file(contig_id, spacer_fasta)
-            candidate.spacerseq = spacerseq
-            
-            # Get direct repeat sequences
-            dr_fasta = result_folder / "Complete_repeat_dataset.fasta"
-            contig_id = f"{candidate.name}_CRISPR_{candidate.array_id}_"
-            drseq = cls.read_fasta_file(contig_id, dr_fasta)
-            candidate.drseq = drseq
-
-            return candidate
-            
+        
         if not result_folder.exists():
             print(f"Result folder {result_folder} does not exist. CRISPRidentify may not have run successfully.", file=sys.stderr)
             return None
+        
+
+        def build_ids(prefix: str, count: int):
+            return [
+            fr"CRISPR_{candidate.array_id}_\d+_\d+_{prefix}_{pos}_{candidate.category}"
+            for pos in range(1, count + 1)
+        ]
+
+
+        # Spacer sequences
+        spacer_fasta = result_folder / "Spacers.fasta"
+        spacer_ids = build_ids("spacer", candidate.num_spacers)
+        candidate.spacerseq = [cls.read_fasta_file(cid, spacer_fasta) for cid in spacer_ids]
+        
+
+        # Direct repeat sequences
+        dr_fasta = result_folder / "Repeats.fasta"
+        dr_ids = build_ids("repeat", candidate.num_spacers + 1)
+        candidate.drseq = [cls.read_fasta_file(cid, dr_fasta) for cid in dr_ids]
+
+
+        return candidate
+
+        # # If the result folder does not exist, check the parent directory
+        # elif not result_folder.exists():
+        #     result_folder = result_folder.parent
+
+        #     # Get spacer sequences
+        #     spacer_fasta = result_folder / "Complete_spacer_dataset.fasta"
+        #     contig_id = f"{candidate.name}_CRISPR_{candidate.array_id}_"
+        #     spacerseq = cls.read_fasta_file(contig_id, spacer_fasta)
+        #     candidate.spacerseq = spacerseq
+            
+        #     # Get direct repeat sequences
+        #     dr_fasta = result_folder / "Complete_repeat_dataset.fasta"
+        #     contig_id = f"{candidate.name}_CRISPR_{candidate.array_id}_"
+        #     drseq = cls.read_fasta_file(contig_id, dr_fasta)
+        #     candidate.drseq = drseq
+
+        #     return candidate
+            
+
 
         

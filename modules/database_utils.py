@@ -233,7 +233,7 @@ def generate_array_table(candidates: t.List[t.Any], cls: t.Any) -> pd.DataFrame:
             'category': candidate.category,
             'score': candidate.score,
             'filter': candidate.filter,
-            'date': datetime.now().strftime("%d-%m-%Y")
+            'date': datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
         }
         # array_table = pd.concat([array_table, pd.DataFrame([new_row])], ignore_index=True)
         new_df = pd.DataFrame([new_row])
@@ -354,7 +354,7 @@ def upload_arraytable_to_sql(df: pd.DataFrame, database_name: str, table_name: s
             Column("category", Text, nullable=False),
             Column("score", NUMERIC(20, 4), nullable=False),
             Column("filter", Text, nullable=False),
-            Column("date", String(10), nullable=False)  # Date in 'dd-mm-yyyy' format
+            Column("date", String(20), nullable=False)  # Date in 'dd-mm-yyyy' format
         )
 
         metadata.create_all(engine)          # creates only the defined table
@@ -421,3 +421,74 @@ def upload_spacertable_to_sql(df: pd.DataFrame, database_name: str, table_name: 
         schema=SCHEMA
     )
     print(f"Uploaded {len(df)} rows to {SCHEMA}.{TABLE_NAME}.")
+
+
+def query_db_with_list(query_list: list[str], 
+                       table_name: str, 
+                       column_name: str, 
+                       database_name: str = 'cas13_bacterial_db') -> pd.DataFrame:
+    """
+    Queries the database with a list of values for a specific column in a table.
+
+    args:
+        query_list (list): List of values to query.
+        table_name (str): The name of the table to query.
+        column_name (str): The name of the column to filter by.
+        database_name (str): The name of the database to connect to.
+    
+    returns:
+        pd.DataFrame: A DataFrame containing the query results.
+    """
+
+    creds = get_credentials()['db_credentials']
+    database = database_name
+    pg_url = "postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}".format(
+                creds['user'], creds['password'], creds['host'], creds['port'], database)
+    engine = create_engine(pg_url, pool_pre_ping=True, echo=False)
+    sql_query = f"""    
+        SELECT *
+        FROM {table_name}
+        WHERE {column_name} = ANY(%s)
+    """
+    df  = pd.read_sql_query(sql_query, engine, params=(query_list,))
+    return df
+
+
+def db_clean_duplicates() -> None:
+    """
+    Cleans duplicates from the database by removing rows with duplicate entries.
+    """
+    creds = get_credentials()['db_credentials']
+    database = 'cas13_bacterial_db'
+    pg_url = "postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}".format(
+                creds['user'], creds['password'], creds['host'], creds['port'], database)
+    engine = create_engine(pg_url, pool_pre_ping=True, echo=False)
+
+    sql_query = """
+        WITH to_delete AS (
+            SELECT c.array_id
+            FROM cas13b_crisprs AS c
+            JOIN LATERAL (
+                SELECT MIN(array_id) AS keep_id
+                FROM cas13b_crisprs
+                WHERE (biosampleaccn, contig_id, arraystart, arrayend, arraylen,
+                       avgrepeatlen, avgspacerlen, number_of_spacers, dist_to_cas13b,
+                       orientation, category, score, filter)
+                      = (c.biosampleaccn, c.contig_id, c.arraystart, c.arrayend, c.arraylen,
+                         c.avgrepeatlen, c.avgspacerlen, c.number_of_spacers, c.dist_to_cas13b,
+                         c.orientation, c.category, c.score, c.filter)
+            ) k ON TRUE
+            WHERE c.array_id <> k.keep_id
+        );
+
+        DELETE FROM spacer_table
+        WHERE array_id IN (SELECT array_id FROM to_delete);
+
+        DELETE FROM cas13b_crisprs
+        WHERE array_id IN (SELECT array_id FROM to_delete);
+    """
+    # Connect to the database and execute the query
+    with engine.connect() as conn:
+        # Remove duplicates 
+        conn.execute(sql_text(sql_query))
+        print("Duplicates removed from cas13b_crisprs and spacer_table.")
