@@ -57,13 +57,13 @@ def main():
     # # """
     # # query_results_df = retrieve_data_from_db(outdir, query)
 
-    # samples_list = Path("arry_id.list")
-    # with open(samples_list, 'r') as f:
-    #     samples = [line.strip() for line in f if line.strip()]
+    samples_list = Path("array_id.list")
+    with open(samples_list, 'r') as f:
+        samples = [line.strip() for line in f if line.strip()]
         
-    #     df = db_utils.query_db_with_list(samples, 'spacer_table', 'array_id')
-    #     subset = df[df['type'] == 'spacer']
-    #     subset.to_csv(outdir / 'preliminary_spacer_seqs.csv', index=False)
+        df = db_utils.query_db_with_list(samples, 'spacer_table', 'array_id')
+        subset = df[df['type'] == 'spacer']
+        subset.to_csv(outdir / 'preliminary_spacer_seqs.csv', index=False)
 
     #     # df.to_csv(outdir / 'biosampleaccn_query_results.csv', index=False)
     

@@ -166,27 +166,22 @@ def upload_result(contig_file: Path, outdir: Path) -> None:
                 print(f"No candidates found for {bioaccession}. Skipping.")
                 continue
             
-            # Filter candidates based on average DR and spacer lengths
-            # This will return a list of ArrayCandidate objects
-            filter_candidates = ArrayCandidate.filter_candidates(candidates, avg_dr_len=36, avg_spacer_len=30)
+            new_candidates_list = []    
 
-            complete_candidates = []
-
-            for c in filter_candidates:
-                candidate = ArrayCandidate.get_spacer_dr_seq(c, result_folder)
-                if candidate is not None:
-                    # print(candidate)
-                    complete_candidates.append(candidate)
-
+            for c in candidates:
+                candidate_new = ArrayCandidate.get_spacer_dr_seq(c, result_folder)
+                new_candidates_list.append(ArrayCandidate.get_spacer_len_var(candidate_new))
+            
+            # # Filter candidates based on average DR and spacer lengths
+            # # This will return a list of ArrayCandidate objects
+            filter_candidates = ArrayCandidate.filter_candidates(new_candidates_list, avg_dr_len=36, avg_spacer_len=30)
 
             # Get the CasContig class instance for the given gbff and gff files
             # This will extract the contig_id and other relevant information
             cls = CasContig.get_cas_info(gbff_file, gff_file)
 
-
-            array_df = db_utils.generate_array_table(complete_candidates, cls)
-            spacer_df = db_utils.generate_spacer_table(complete_candidates)
-
+            array_df = db_utils.generate_array_table(filter_candidates, cls)
+            spacer_df = db_utils.generate_spacer_table(filter_candidates)
 
             # Upload the dataframes to the SQL database
             db_utils.upload_arraytable_to_sql(array_df, "cas13_bacterial_db", "cas13b_crisprs")
@@ -252,12 +247,12 @@ def main():
 
 
     ### Step 6: Upload the results to the database
-    # data_file = outdir / "cas13b_contigs.csv"
+    data_file = outdir / "cas13b_contigs.csv"
     # data_file = outdir / "test.csv"
-    # upload_result(f"{data_file}", outdir)
+    upload_result(f"{data_file}", outdir)
 
 
-    ### Step 7: Clean database to remove duplicates
+    # ### Step 7: Clean database to remove duplicates
     db_utils.db_clean_duplicates()
     
 if __name__ == "__main__":

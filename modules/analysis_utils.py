@@ -3,6 +3,7 @@ import os, sys
 import uuid
 import re
 import typing as t
+import math
 from typing import Optional
 from pathlib import Path
 from Bio import SeqIO
@@ -30,6 +31,7 @@ class ArrayCandidate:
         avg_repeat_length (int): Average length of direct repeats in the CRISPR array.
         avg_spacer_length (int): Average length of spacers in the CRISPR array.
         num_spacers (int): Number of spacers in the CRISPR array.
+        pacer_len_var (int): Variance of spacer lengths in the CRISPR array.
         orientation (str): Orientation of the CRISPR array.
         category (str): Category of the CRISPR array.
         score (int): Score assigned to the CRISPR array based on certain criteria.
@@ -52,6 +54,7 @@ class ArrayCandidate:
     avg_repeat_length: Optional[int] = None
     avg_spacer_length: Optional[int] = None
     num_spacers: Optional[int] = None
+    spacer_len_var: Optional[int] = None
     dist_to_cas: Optional[int] = None
     orientation: Optional[str] = None
     category: Optional[str] = None
@@ -134,6 +137,16 @@ class ArrayCandidate:
 
         return cls
 
+    @classmethod
+    def calc_spacer_len_var(cls, spacers: t.List[str]) -> int:
+        """Return the variance of spacer lengths."""
+        if len(spacers) < 2:
+            return 0
+        lengths = [len(s) for s in spacers]
+        mean = sum(lengths) / len(lengths)
+        variance = sum((x - mean) ** 2 for x in lengths) / (len(lengths) - 1)
+
+        return math.sqrt(variance)
 
 
     @classmethod
@@ -293,6 +306,7 @@ class ArrayCandidate:
         """
 
         for c in candidates:
+            # print(c.spacer_len_var)
             passed = (
                 c.num_spacers >= min_spacers and
                 c.dist_to_cas < dist_to_cas and
@@ -365,24 +379,28 @@ class ArrayCandidate:
 
 
         return candidate
+    
 
-        # # If the result folder does not exist, check the parent directory
-        # elif not result_folder.exists():
-        #     result_folder = result_folder.parent
+    @classmethod
+    def get_spacer_len_var(cls, candidate: 'ArrayCandidate') -> 'ArrayCandidate':
+        """
+        Calculate the variance of spacer lengths for a given ArrayCandidate.
+        
+        Args:
+            candidate (ArrayCandidate): An instance of ArrayCandidate containing the CRISPR array information.
+        
+        Returns:
+            ArrayCandidate: The updated ArrayCandidate instance with spacer_len_var attribute set.
+        """
+        if candidate.spacerseq is None or len(candidate.spacerseq) == 0:
+            print(f"No spacer sequences found for {candidate.array_id}. Cannot calculate spacer length variance.", file=sys.stderr)
+            return candidate
+        
+        spacer_length_std = cls.calc_spacer_len_var(candidate.spacerseq)
+        candidate.spacer_len_var = round(spacer_length_std, 4)
+        
+        return candidate
 
-        #     # Get spacer sequences
-        #     spacer_fasta = result_folder / "Complete_spacer_dataset.fasta"
-        #     contig_id = f"{candidate.name}_CRISPR_{candidate.array_id}_"
-        #     spacerseq = cls.read_fasta_file(contig_id, spacer_fasta)
-        #     candidate.spacerseq = spacerseq
-            
-        #     # Get direct repeat sequences
-        #     dr_fasta = result_folder / "Complete_repeat_dataset.fasta"
-        #     contig_id = f"{candidate.name}_CRISPR_{candidate.array_id}_"
-        #     drseq = cls.read_fasta_file(contig_id, dr_fasta)
-        #     candidate.drseq = drseq
-
-        #     return candidate
             
 
 

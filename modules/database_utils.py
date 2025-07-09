@@ -213,7 +213,7 @@ def generate_array_table(candidates: t.List[t.Any], cls: t.Any) -> pd.DataFrame:
     """
     array_table = pd.DataFrame(columns=['array_id', 'biosampleaccn', 'contig_id',
                                     'arraystart', 'arrayend', 'arraylen', 'avgrepeatlen', 
-                                    'avgspacerlen','number_of_spacers', 'dist_to_cas13b', 
+                                    'avgspacerlen','number_of_spacers', 'spacer_len_var', 'dist_to_cas13b', 
                                     'orientation', 'category', 'score', 'filter', 'date'])
 
 
@@ -228,6 +228,7 @@ def generate_array_table(candidates: t.List[t.Any], cls: t.Any) -> pd.DataFrame:
             'avgrepeatlen': candidate.avg_repeat_length,
             'avgspacerlen': candidate.avg_spacer_length,
             'number_of_spacers': candidate.num_spacers,
+            'spacer_len_var': candidate.spacer_len_var,
             'dist_to_cas13b': candidate.dist_to_cas,
             'orientation': candidate.orientation,
             'category': candidate.category,
@@ -329,9 +330,11 @@ def upload_arraytable_to_sql(df: pd.DataFrame, database_name: str, table_name: s
         # Alter score column to NUMERIC(20,4) using raw SQL
         with engine.connect() as conn:
             conn.execute(sql_text(f"""
-                ALTER TABLE {SCHEMA}.{TABLE_NAME}
+            ALTER TABLE {SCHEMA}.{TABLE_NAME}
                 ALTER COLUMN score TYPE NUMERIC(20, 4)
-                USING ROUND(score::numeric, 4);
+                    USING ROUND(score::numeric, 4),
+                ALTER COLUMN spacer_len_var TYPE NUMERIC(20, 4)
+                    USING ROUND(spacer_len_var::numeric, 4);
             """))
     
     # Otherwise, create the table
@@ -349,6 +352,7 @@ def upload_arraytable_to_sql(df: pd.DataFrame, database_name: str, table_name: s
             Column("avgrepeatlen", Integer, nullable=False),
             Column("avgspacerlen", Integer, nullable=False),
             Column("number_of_spacers", Integer, nullable=False),
+            Column("spacer_len_var", NUMERIC(20, 4), nullable=False),  # Variance of spacer lengths
             Column("dist_to_cas13b", Integer, nullable=False),
             Column("orientation", Text, nullable=False),
             Column("category", Text, nullable=False),
@@ -368,7 +372,7 @@ def upload_arraytable_to_sql(df: pd.DataFrame, database_name: str, table_name: s
         index=False,
         method=None,
         schema=SCHEMA,
-        dtype={"score": NUMERIC(20, 4)}
+        dtype={"score": NUMERIC(20, 4), "spacer_len_var": NUMERIC(20, 4)}
     )
     print(f"Uploaded {len(df)} rows to {SCHEMA}.{TABLE_NAME}.")
 
@@ -483,6 +487,7 @@ def db_clean_duplicates() -> None:
                   AND avgrepeatlen       IS NOT DISTINCT FROM c.avgrepeatlen
                   AND avgspacerlen       IS NOT DISTINCT FROM c.avgspacerlen
                   AND number_of_spacers  IS NOT DISTINCT FROM c.number_of_spacers
+                  AND spacer_len_var     IS NOT DISTINCT FROM c.spacer_len_var                              
                   AND dist_to_cas13b     IS NOT DISTINCT FROM c.dist_to_cas13b
                   AND orientation        IS NOT DISTINCT FROM c.orientation
                   AND category           IS NOT DISTINCT FROM c.category
