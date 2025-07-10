@@ -7,6 +7,7 @@ import math
 from typing import Optional
 from pathlib import Path
 from Bio import SeqIO
+from Bio.Seq import Seq
 import modules.database_utils as db_utils
 from modules.genome_utils import CasContig
 from dataclasses import dataclass
@@ -88,7 +89,7 @@ class ArrayCandidate:
             str: 'F' for Forward, 'R' for Reversed.
         """
         if strand == "Forward":
-            return "Foward"
+            return "Forward"
         elif strand == "Reversed":
             return "Reverse"
         else:
@@ -401,7 +402,66 @@ class ArrayCandidate:
         
         return candidate
 
-            
+
+def transcribe_dna(dna_seq: str) -> str:
+    """
+    Transcribe a DNA sequence into RNA using Biopython.
+    
+    Args:
+        dna_seq (str): DNA sequence (e.g., "ATGCTTACG")
+        
+    Returns:
+        str: Transcribed RNA sequence (e.g., "AUGCUUACG")
+    """
+    dna = Seq(dna_seq.upper())
+    rna = dna.transcribe()
+    return str(rna)
 
 
+def reverse_complement(sequence: str, nt="rna") -> str:
+    """
+    Generate the reverse complement of a given DNA/RNA sequence.
+    
+    Args:
+        seq (str): The DNA/RNA sequence to reverse complement.
+        nt (str): The type of nucleotide sequence, either 'dna' or 'rna'. Default is 'rna'.
+    
+    Returns:
+        str: The reverse complement of the input sequence.
+    """
+    if nt.lower() not in ["dna", "rna"]:
+        raise ValueError("Invalid nucleotide type. Use 'dna' or 'rna'.")
+    
+    seq = sequence.upper()
+    if nt.lower() == "rna":
+        rev_complement_dna = Seq(seq).reverse_complement()
+        return str(rev_complement_dna.transcribe().upper())
+    elif nt.lower() == "dna":
+        return str(Seq(seq).reverse_complement()).upper()
+    
+
+
+
+
+
+def nucleotide_content_calc(spacer: str) -> t.Dict[str, float]:
+    """
+    Calculate the nucleotide content of a given spacer sequence.
+    
+    Args:
+        spacer (str): The spacer sequence.
+    
+    Returns:
+        Dict[str, float]: A dictionary containing the percentage of each nucleotide in the spacer.
+    """
+    total_length = len(spacer)
+    if total_length == 0:
+        return {"A": 0.0, "T": 0.0, "C": 0.0, "G": 0.0}
+    
+    return {
+        "A": round((spacer.count("A") / total_length), 4),
+        "C": round((spacer.count("C") / total_length), 4),
+        "G": round((spacer.count("G") / total_length), 4),
+        "T": round((spacer.count("T") / total_length), 4)
+    }
         
