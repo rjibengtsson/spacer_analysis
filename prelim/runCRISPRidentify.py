@@ -27,26 +27,27 @@ def run_crispr_prediction(dataframe: pd, outdir: Path) -> None:
     Run CRISPR prediction on the given dataframe containing biosample accessions.
     The results will be saved in the specified output directory.
     """
-    for _, row in dataframe.iterrows():
-        cas_gene = row.get('cas_gene')
-        if not cas_gene or pd.isna(cas_gene):
-            continue
+    # for _, row in dataframe.iterrows():
+    #     cas_gene = row.get('cas_gene')
+    #     if not cas_gene or pd.isna(cas_gene):
+    #         continue
 
-        bioaccession = row['biosample_accession']
-        fasta_paths = [
-            outdir / f"{bioaccession}_contig/{bioaccession}.fna",
-            outdir / f"{bioaccession}.fna"
-        ]
+    #     bioaccession = row['biosample_accession']
+    bioaccession = "SAMN43071638"
+    fasta_paths = [
+        outdir / f"{bioaccession}_contig/{bioaccession}.fna",
+        outdir / f"{bioaccession}.fna"
+    ]
 
-        for fasta_file in fasta_paths:
-            if fasta_file.exists():
-                CrisprDetection.run_crispridentify(fasta_file, outdir)
+    for fasta_file in fasta_paths:
+        if fasta_file.exists():
+            CrisprDetection.run_crispridentify(fasta_file, outdir)
 
 
 def main():
     
     # timestamp = datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
-    timestamp = "07-07-2025-11-30-52"
+    timestamp = "16-07-2025-16-10-10"
     outdir = Path(f"/spacers_db/prediction_results_{timestamp}")
     if not outdir.exists():
         outdir.mkdir(parents=True, exist_ok=True)

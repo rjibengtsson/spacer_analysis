@@ -6,8 +6,9 @@ import typing as t
 import math
 from typing import Optional
 from pathlib import Path
-from Bio import SeqIO
 from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
 import modules.database_utils as db_utils
 from modules.genome_utils import CasContig
 from dataclasses import dataclass
@@ -403,65 +404,79 @@ class ArrayCandidate:
         return candidate
 
 
-def transcribe_dna(dna_seq: str) -> str:
+def get_gRNA_seq(spacer_seq: str) -> str:
     """
-    Transcribe a DNA sequence into RNA using Biopython.
+    Transcribe a DNA spacer sequence into gRNA sequence.
     
     Args:
-        dna_seq (str): DNA sequence (e.g., "ATGCTTACG")
+        spacer_seq (str): DNA spacer sequence (e.g., "ATGCTTACG")
         
     Returns:
-        str: Transcribed RNA sequence (e.g., "AUGCUUACG")
+        str: Transcribed gRNA sequence (e.g., "AUGCUUACG") in 5' to  3' direction.
     """
-    dna = Seq(dna_seq.upper())
-    rna = dna.transcribe()
-    return str(rna)
 
+    dna = Seq(spacer_seq.upper())
+    reverse_complement = dna.reverse_complement()
+    gRNA = reverse_complement.transcribe()
 
-def reverse_complement(sequence: str, nt="rna") -> str:
-    """
-    Generate the reverse complement of a given DNA/RNA sequence.
-    
-    Args:
-        seq (str): The DNA/RNA sequence to reverse complement.
-        nt (str): The type of nucleotide sequence, either 'dna' or 'rna'. Default is 'rna'.
-    
-    Returns:
-        str: The reverse complement of the input sequence.
-    """
-    if nt.lower() not in ["dna", "rna"]:
-        raise ValueError("Invalid nucleotide type. Use 'dna' or 'rna'.")
-    
-    seq = sequence.upper()
-    if nt.lower() == "rna":
-        rev_complement_dna = Seq(seq).reverse_complement()
-        return str(rev_complement_dna.transcribe().upper())
-    elif nt.lower() == "dna":
-        return str(Seq(seq).reverse_complement()).upper()
-    
+    return str(gRNA)
 
 
 
-
-
-def nucleotide_content_calc(spacer: str) -> t.Dict[str, float]:
+def nucleotide_content_calc(sequence: str, nt='dna') -> t.Dict[str, float]:
     """
     Calculate the nucleotide content of a given spacer sequence.
     
     Args:
-        spacer (str): The spacer sequence.
+        sequence (str): The RNA/DNA sequence
+        nt (str): Define either "rna" or "dna" to calculate nucleotide content.
     
     Returns:
         Dict[str, float]: A dictionary containing the percentage of each nucleotide in the spacer.
     """
-    total_length = len(spacer)
-    if total_length == 0:
-        return {"A": 0.0, "T": 0.0, "C": 0.0, "G": 0.0}
+    total_length = len(sequence)
+    if nt.lower() == "rna":
+       return {
+            "A": round((sequence.count("A") / total_length), 4),
+            "C": round((sequence.count("C") / total_length), 4),
+            "G": round((sequence.count("G") / total_length), 4),
+            "U": round((sequence.count("U") / total_length), 4)
+        } 
+    elif nt.lower() == "dna":
+        return {
+            "A": round((sequence.count("A") / total_length), 4),
+            "C": round((sequence.count("C") / total_length), 4),
+            "G": round((sequence.count("G") / total_length), 4),
+            "T": round((sequence.count("T") / total_length), 4)
+        }
+    else:
+        raise ValueError("Invalid nucleotide type. Use 'rna' or 'dna'.")
+
+
+def generate_multifasta_from_df(df, output_file: Path, nt="dna") -> None:
+    """
+    Generate a multifasta file from a DataFrame containing spacer/repeat sequences.
+    Args:
+        df (pd.DataFrame): Pandas DataFrame containing spacer/repeat sequences.
+        output_file (Path): Path to the output multifasta file.
+        nt (str): Define either "grna" or "dna" to grab sequence.
+    """
     
-    return {
-        "A": round((spacer.count("A") / total_length), 4),
-        "C": round((spacer.count("C") / total_length), 4),
-        "G": round((spacer.count("G") / total_length), 4),
-        "T": round((spacer.count("T") / total_length), 4)
-    }
-        
+    records = []
+
+    for index, row in df.iterrows():
+        if nt.lower() == "dna":
+            seq = row['sequence']
+            fasta_id = f"{row['speciesname'].replace(' ', '_')}_{row['type']}_{row['position']}"
+            records.append(SeqRecord(Seq(seq), id=fasta_id, description=""))
+        elif nt.lower() == "grna":
+            seq = get_gRNA_seq(row['gRNA_sequence'])
+            fasta_id = f"{row['speciesname'].replace(' ', '_')}_gRNA_{row['position']}"
+            records.append(SeqRecord(Seq(seq), id=fasta_id, description=""))
+
+
+    with open(output_file, "w") as output_handle:
+        SeqIO.write(records, output_handle, "fasta")
+    
+    print(f"Multifasta file generated: {output_file}")
+    
