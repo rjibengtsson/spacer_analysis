@@ -13,4 +13,5 @@ tools/CRISPRidentify-1.2.1/tools/CRISPRcasIdentifier/CRISPRcasIdentifier/trained
 tools/CRISPRidentify-1.2.1/tools/CRISPRcasIdentifier/CRISPRcasIdentifier/HMM_sets.tar.gz
 
 modules/db_credentials.json
+tools/bedtools2/
 

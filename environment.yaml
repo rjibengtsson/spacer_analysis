@@ -1,0 +1,16 @@
+name: modules
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - blast=2.14.0
+  - pandas
+  - numpy
+  - biopython
+  - matplotlib
+  - logomaker
+  - plotnine
+  - sqlite=3.45.3
+  
