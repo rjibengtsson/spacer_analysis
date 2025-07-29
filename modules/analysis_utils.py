@@ -4,6 +4,7 @@ import uuid
 import re
 import typing as t
 import math
+import pandas as pd
 from typing import Optional
 from pathlib import Path
 from Bio.Seq import Seq
@@ -402,6 +403,146 @@ class ArrayCandidate:
         candidate.spacer_len_var = round(spacer_length_std, 4)
         
         return candidate
+
+
+@dataclass
+class PhageElement:
+
+    """    Class to represent overlapping protospacer and ORF in the context of a phage genome.
+    
+    Attributes:
+        sequence_id (str): Unique identifier for the spacer sequence.
+        spacer_host (str): Host associated with the spacer.
+        phage_id (str): Unique identifier for the phage.
+        phagestart (int): Start position of the protospacer in the phage genome.
+        phageend (int): End position of the protospacer in the phage genome.
+        feature_type (str): Type of feature in the GFF file.
+        orfstart (int): Start position of the ORF in the phage genome.
+        orfend (int): End position of the ORF in the phage genome.
+        strand (str): Strand orientation of the ORF (e.g., '+', '-').
+        phase (str): Phase of the ORF.
+        attributes (str): Additional attributes from the GFF file.
+    
+    Returns:
+        PhageElement: An instance of PhageElement containing the phage element information.
+    """
+
+    sequence_id: Optional[str] = None
+    spacer_host: Optional[str] = None
+    phage_id: Optional[str] = None
+    phagestart: Optional[int] = None
+    phageend: Optional[int] = None
+    feature_type: Optional[str] = None
+    orfstart: Optional[int] = None
+    orfend: Optional[int] = None
+    strand: Optional[str] = None
+    phase: Optional[str] = None
+    attributes: Optional[str] = None
+
+    home_dir = Path('/home/unimelb.edu.au/rbengtsson/work/spacer_analysis/')
+
+    @classmethod
+    def get_database_name(cls, db_name: str) -> str:
+        """
+        Get database name
+        """
+
+        db_name_dict = {'PHAGESDB': 'PhagesDB',
+                        'REFSEQ': 'RefSeq',
+                        'GENBANK': 'GenBank',
+                        'TEMPHD': 'TemPhD'}
+
+        if db_name in db_name_dict:
+            return db_name_dict[db_name]
+        else:
+            return db_name
+        
+    
+    @classmethod
+    def run_bedtools(cls, spacer_bed: str, phage_bed: str, out_file: str) -> Path:
+        """
+        Runs bedtools to find intersections between spacer and phage BED files.
+        """
+        cmd = f"{cls.home_dir}/tools/bedtools2/bin/bedtools intersect -a {phage_bed} -b {spacer_bed} -wa > {out_file}"
+        subprocess.run(cmd, shell=True, check=True)
+        return out_file
+
+
+    @classmethod
+    def clean_files(cls, *files: str):
+        """
+        Cleans up temporary files created during the process.
+        """
+        for file in files:
+            if os.path.exists(file):
+                os.remove(file)
+
+    
+    @classmethod
+    def get_intersection(cls, sequence_id: str, blastn_file: str, out_dir: str) -> pd.DataFrame:
+        blastn_df = db_utils.read_table_from_db(blastn_file)
+
+        df = pd.DataFrame(columns=[
+            'sequence_id', 'spacer_host', 'phage_id', 'phagestart', 'phageend',
+            'feature_type', 'orfstart', 'orfend', 'strand', 'phase', 'attributes'
+        ])
+
+        gff_dir = Path("/phagescope_db/gff/")
+
+        phage_bed = f"phage_{uuid.uuid4()}.bed"
+        spacer_bed = f"spacer_{uuid.uuid4()}.bed"
+
+        blastn_df = blastn_df[blastn_df['sequence_id'] == sequence_id]
+        for index, row in blastn_df.iterrows():
+            db_name = cls.get_database_name(row['phagesource'])
+            gff_file = gff_dir / f"{db_name}.gff3"
+            phage_id = row['phage_id']
+            awk_script = f"""
+                            awk -F'\\t' '$1 == "{phage_id}" {{
+                                printf "%s\\t%s\\t%s", $1, $4, $5;
+                                for (i = 1; i <= NF; i++) {{
+                                    if (i != 1 && i != 4 && i != 5) {{
+                                        printf "\\t%s", $i;
+                                    }}
+                                }}
+                                printf "\\n";
+                            }}' {gff_file} > {phage_bed}
+                            """
+            subprocess.run(awk_script, shell=True, capture_output=True, text=True)
+
+            if row['phagestart'] > row['phageend']:
+                phagestart, phageend = row['phageend'], row['phagestart']
+            else:
+                phagestart, phageend = row['phagestart'], row['phageend']
+            
+            with open(spacer_bed, 'w') as f:
+                line = f"{row['phage_id']}\t{phagestart}\t{phageend}"
+                f.write(line)
+            
+            intersect_bed = cls.run_bedtools(spacer_bed, phage_bed, f"intersection_{uuid.uuid4()}.bed")
+            with open(intersect_bed, 'r') as f:
+                elements = f.read().split('\t')
+            instance = PhageElement(
+                sequence_id=row['sequence_id'],
+                spacer_host=row['spacerhost'],
+                phage_id=phage_id,
+                phagestart=int(row['phagestart']),
+                phageend=int(row['phageend']),
+                feature_type=elements[4],
+                orfstart=int(elements[1]),
+                orfend=int(elements[2]),
+                strand=elements[6],
+                phase=elements[7],
+                attributes=elements[8]
+            )
+            new_df = pd.DataFrame([instance.__dict__])
+            df = pd.concat([df, new_df], ignore_index=True)
+            cls.clean_files(phage_bed, spacer_bed, intersect_bed)
+
+        out_file = f"{out_dir}/protospacer_phage_intersection_{sequence_id}.csv"
+        df.to_csv(out_file, index=False)
+        return df
+
 
 
 def get_gRNA_seq(spacer_seq: str) -> str:
