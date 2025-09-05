@@ -520,27 +520,45 @@ class PhageElement:
                 f.write(line)
             
             intersect_bed = cls.run_bedtools(spacer_bed, phage_bed, f"intersection_{uuid.uuid4()}.bed")
-            with open(intersect_bed, 'r') as f:
-                elements = f.read().split('\t')
-            instance = PhageElement(
-                sequence_id=row['sequence_id'],
-                spacer_host=row['spacerhost'],
-                phage_id=phage_id,
-                phagestart=int(row['phagestart']),
-                phageend=int(row['phageend']),
-                feature_type=elements[4],
-                orfstart=int(elements[1]),
-                orfend=int(elements[2]),
-                strand=elements[6],
-                phase=elements[7],
-                attributes=elements[8]
-            )
-            new_df = pd.DataFrame([instance.__dict__])
-            df = pd.concat([df, new_df], ignore_index=True)
-            cls.clean_files(phage_bed, spacer_bed, intersect_bed)
+            if os.path.getsize(intersect_bed) == 0:
+                instance = PhageElement(
+                    sequence_id=row['sequence_id'],
+                    spacer_host=row['spacerhost'],
+                    phage_id=phage_id,
+                    phagestart=phagestart,
+                    phageend=phageend,
+                    feature_type="NA",
+                    orfstart="NA",
+                    orfend="NA",
+                    strand="NA",
+                    phase="NA",
+                    attributes="NA"
+                )
+                new_df = pd.DataFrame([instance.__dict__])
+                df = pd.concat([df, new_df], ignore_index=True)
+                cls.clean_files(phage_bed, spacer_bed, intersect_bed)
+            else:
+                with open(intersect_bed, 'r') as f:
+                    elements = f.read().split('\t')
+                    instance = PhageElement(
+                        sequence_id=row['sequence_id'],
+                        spacer_host=row['spacerhost'],
+                        phage_id=phage_id,
+                        phagestart=int(row['phagestart']),
+                        phageend=int(row['phageend']),
+                        feature_type=elements[4],
+                        orfstart=int(elements[1]),
+                        orfend=int(elements[2]),
+                        strand=elements[6],
+                        phase=elements[7],
+                        attributes=elements[8].strip()
+                    )
+                new_df = pd.DataFrame([instance.__dict__])
+                df = pd.concat([df, new_df], ignore_index=True)
+                cls.clean_files(phage_bed, spacer_bed, intersect_bed)
 
-        out_file = f"{out_dir}/protospacer_phage_intersection_{sequence_id}.csv"
-        df.to_csv(out_file, index=False)
+        # out_file = f"{out_dir}/protospacer_phage_intersection_{sequence_id}.csv"
+        # df.to_csv(out_file, index=False)
         return df
 
 
@@ -620,4 +638,21 @@ def generate_multifasta_from_df(df, output_file: Path, nt="dna") -> None:
         SeqIO.write(records, output_handle, "fasta")
     
     print(f"Multifasta file generated: {output_file}")
+
+
+def get_genome_seq_from_fasta(fasta_file: Path, contig_id: str) -> Optional[str]:
+    """
+    Get the genome sequence for a specific contig from a FASTA file.
     
+    Args:
+        fasta_file (Path): Path to the FASTA file containing genome sequences.
+        contig_id (str): The ID of the contig to retrieve the sequence for.
+    
+    Returns:
+        record: The genome sequence for the specified contig, or None if not found.
+    """
+    
+    for record in SeqIO.parse(fasta_file, "fasta"):
+        if record.id == contig_id:
+            match_record = SeqRecord(seq=record.seq, id=contig_id, description=f"")
+            return match_record

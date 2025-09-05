@@ -33,7 +33,7 @@ def run_crispr_prediction(dataframe: pd, outdir: Path) -> None:
     #         continue
 
     #     bioaccession = row['biosample_accession']
-    bioaccession = "SAMN43071638"
+    bioaccession = "SAMN03382583"
     fasta_paths = [
         outdir / f"{bioaccession}_contig/{bioaccession}.fna",
         outdir / f"{bioaccession}.fna"
@@ -42,12 +42,14 @@ def run_crispr_prediction(dataframe: pd, outdir: Path) -> None:
     for fasta_file in fasta_paths:
         if fasta_file.exists():
             CrisprDetection.run_crispridentify(fasta_file, outdir)
+        else:
+            print(f"Fasta file {fasta_file} does not exist. Skipping CRISPR prediction for {bioaccession}.")
 
 
 def main():
     
     # timestamp = datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
-    timestamp = "16-07-2025-16-10-10"
+    timestamp = "29-07-2025-16-47-04"
     outdir = Path(f"/spacers_db/prediction_results_{timestamp}")
     if not outdir.exists():
         outdir.mkdir(parents=True, exist_ok=True)

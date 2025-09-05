@@ -192,48 +192,48 @@ def upload_result(contig_file: Path, outdir: Path) -> None:
 def main():
 
     ### Step 1: Set up the output directory
-    timestamp = datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
-    # timestamp = "07-07-2025-11-30-52"
+    # timestamp = datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
+    timestamp = "29-07-2025-16-47-04"
     outdir = Path(f"/spacers_db/prediction_results_{timestamp}")
     if not outdir.exists():
         outdir.mkdir(parents=True, exist_ok=True)
     
 
-    ## Step 2: Define the query to retrieve data from the database
-    # Define the query to retrieve data from the database
-    # set query
-    query = """
-        SELECT n.biosampleaccn,
-            n.organism,
-            s.sequencingtechnology,
-            s.genomecoverage,
-            n.ftppath_genbank
-        FROM ncbi_assembly AS n
-        JOIN seq_platform AS s ON n.assemblyname = s.assemblyname
-        WHERE n.biosampleaccn = 'SAMN43071638';
-    """
+    # ## Step 2: Define the query to retrieve data from the database
+    # # Define the query to retrieve data from the database
+    # # set query
+    # query = """
+    #     SELECT n.biosampleaccn,
+    #         n.organism,
+    #         s.sequencingtechnology,
+    #         s.genomecoverage,
+    #         n.ftppath_genbank
+    #     FROM ncbi_assembly AS n
+    #     JOIN seq_platform AS s ON n.assemblyname = s.assemblyname
+    #     WHERE n.biosampleaccn = 'SAMN03382583';
+    # """
 
-    # Retrieve data from the database
-    query_results_df = retrieve_data_from_db(outdir, query)
-
-
-    ## Step 3: Fetch data from NCBI based on the query results
-    # Fetch data from NCBI based on the query results
-    fetch_data(query_results_df, outdir)
-
-    # Check if the outdir is empty
-    if not os.listdir(outdir):
-        print("No data fetched from NCBI. Exiting.")
-        return
-
-    # # unzip the files in the outdir
-    genome_utils.unzip_files(outdir)
+    # # Retrieve data from the database
+    # query_results_df = retrieve_data_from_db(outdir, query)
 
 
-    ### Step 4: Search for cas13b in the retrieved data
-    # Search for cas13b in the retrieved data
-    # query_results_df = db_utils.read_table_from_db(f"/spacers_db/db_query_result.csv")
-    cas13b_df = cas13b_search(query_results_df, outdir)
+    # ## Step 3: Fetch data from NCBI based on the query results
+    # # Fetch data from NCBI based on the query results
+    # fetch_data(query_results_df, outdir)
+
+    # # Check if the outdir is empty
+    # if not os.listdir(outdir):
+    #     print("No data fetched from NCBI. Exiting.")
+    #     return
+
+    # # # unzip the files in the outdir
+    # genome_utils.unzip_files(outdir)
+
+
+    # ### Step 4: Search for cas13b in the retrieved data
+    # # Search for cas13b in the retrieved data
+    # # query_results_df = db_utils.read_table_from_db(f"/spacers_db/db_query_result.csv")
+    # cas13b_df = cas13b_search(query_results_df, outdir)
 
 
 
@@ -243,13 +243,13 @@ def main():
 
 
     # ### Step 6: Upload the results to the database
-    # data_file = outdir / "cas13b_contigs.csv"
-    # # data_file = outdir / "test.csv"
-    # upload_result(f"{data_file}", outdir)
+    data_file = outdir / "cas13b_contigs.csv"
+    # data_file = outdir / "test.csv"
+    upload_result(f"{data_file}", outdir)
 
 
     # # ### Step 7: Clean database to remove duplicates
-    # db_utils.db_clean_duplicates()
+    db_utils.db_clean_duplicates()
     
 if __name__ == "__main__":
     main()

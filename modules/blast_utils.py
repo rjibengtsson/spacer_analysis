@@ -29,7 +29,7 @@ def generate_sequence_file(sequence_id: str, sequence: str, output_dir: Path) ->
     return output_file
 
 
-def blast_search(blast_db: Path, spacerSeq_file: Path, sequence_id: str, output_dir: Path):
+def blast_search(blast_db: Path, spacerSeq_file: Path, sequence_id: str, output_dir: Path, pident: float, cov_perc: float) -> Optional[Path]:
     """
     Perform a BLAST search for the given spacer sequence.
     """
@@ -41,8 +41,8 @@ def blast_search(blast_db: Path, spacerSeq_file: Path, sequence_id: str, output_
         "-query", f"{spacerSeq_file}",
         "-db", f"{blast_db}",
         "-max_target_seqs", "10",
-        "-perc_identity", "95",
-        "-qcov_hsp_perc", "95",
+        "-perc_identity", f"{pident}",
+        "-qcov_hsp_perc", f"{cov_perc}",
         "-outfmt", "6",
         "-out", f"{output_file}"
     ]
@@ -54,25 +54,27 @@ def blast_search(blast_db: Path, spacerSeq_file: Path, sequence_id: str, output_
     except subprocess.CalledProcessError as e:
         print(f"Error during BLAST search: {e}")
     
+    # clean up the fasta file after BLAST search
+    rm_cmd = ["rm", spacerSeq_file]
+    subprocess.run(rm_cmd)
+
     if os.path.getsize(output_file) > 0:
         return output_file
     else:
         rm_cmd = ["rm", output_file]
-        subprocess.run(rm_cmd)
-        rm_cmd = ["rm", spacerSeq_file]
         subprocess.run(rm_cmd)
         print(f"No results found for {sequence_id}. BLAST output file removed.")
         return None
 
 
 
-def process_sequence(blast_db, row_data):
+def process_sequence(blast_db, row_data, pident: float = 90, cov_perc: float = 95):
     row, output_dir = row_data
-    if len(row['sequence']) == 30:
-        sequence_id = row['sequence_id']
-        sequence = row['sequence']
-        fasta_file = generate_sequence_file(sequence_id, sequence, output_dir)
-        blast_search(blast_db, fasta_file, sequence_id, output_dir)
+    # if len(row['sequence']) == 30:
+    sequence_id = row['sequence_id']
+    sequence = row['sequence']
+    fasta_file = generate_sequence_file(sequence_id, sequence, output_dir)
+    blast_search(blast_db, fasta_file, sequence_id, output_dir, pident=pident, cov_perc=cov_perc)
 
 
 @dataclass
@@ -84,8 +86,10 @@ class PhageBlast:
     spacerhost: Optional[str] = None
     phage_id: Optional[str] = None
     pident: Optional[float] = None
+    spacerlength: Optional[int] = None
     algn_length: Optional[int] = None
     mismatch: Optional[int] = None
+    gapopen: Optional[int] = None
     phagestart: Optional[int] = None
     phageend: Optional[int] = None
     phagelength: Optional[int] = None
@@ -103,7 +107,7 @@ class PhageBlast:
         """
         Retrieve phage information from the metadata file.
         """
-        phage_metadata_df = pd.read_csv('/spacers_db/phagescope/phagescope_phage_meta_data.tsv', sep='\t', header=0, dtype=str)
+        phage_metadata_df = pd.read_csv('/phagescope_db/phagescope/phagescope_phage_meta_data.tsv', sep='\t', header=0, dtype=str)
         
         result = phage_metadata_df[phage_metadata_df['Phage_ID'] == phage_id]
         return result.iloc[0].to_dict() if not result.empty else {}
@@ -122,6 +126,7 @@ class PhageBlast:
             pident=float(fields[2]),
             algn_length=int(fields[3]),
             mismatch=int(fields[4]),
+            gapopen=int(fields[5]),
             phagestart=int(fields[8]),
             phageend=int(fields[9]),
             phagelength=int(cls.retrieve_phage_info(fields[1]).get('Length')),
