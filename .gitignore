@@ -15,3 +15,4 @@ tools/CRISPRidentify-1.2.1/tools/CRISPRcasIdentifier/CRISPRcasIdentifier/HMM_set
 modules/db_credentials.json
 tools/bedtools2/
 
+tools/cdhit

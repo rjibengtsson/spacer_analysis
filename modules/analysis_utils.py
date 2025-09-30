@@ -656,3 +656,54 @@ def get_genome_seq_from_fasta(fasta_file: Path, contig_id: str) -> Optional[str]
         if record.id == contig_id:
             match_record = SeqRecord(seq=record.seq, id=contig_id, description=f"")
             return match_record
+
+
+def fisher_exact_test(a: int, b: int, c: int, d: int) -> float:
+    """
+    Perform Fisher's exact test on a 2x2 contingency table.
+    
+    Args:
+        a (int): Count of successes in group 1.
+        b (int): Count of failures in group 1.
+        c (int): Count of successes in group 2.
+        d (int): Count of failures in group 2.
+    
+    Returns:
+        float: The p-value from Fisher's exact test.
+    """
+    from scipy.stats import fisher_exact
+
+    # Create the contingency table
+    contingency_table = [[a, b], [c, d]]
+
+    # Perform Fisher's exact test
+    _, p_value = fisher_exact(contingency_table)
+
+    return p_value
+
+def perform_fishers_test(group1: list, group2: list, position: int, nucleotide: str) -> float:
+    """
+    Perform Fisher's exact test for a specific nucleotide at a given position between two groups of sequences.
+    
+    Args:
+        group1 (list): List of sequences in group 1.
+        group2 (list): List of sequences in group 2.
+        position (int): The position to check (0-based index).
+        nucleotide (str): The nucleotide to check for (e.g., 'A', 'C', 'G', 'T').
+    
+    Returns:
+        float: The p-value from Fisher's exact test.
+    """
+    
+    # Count occurrences in group 1
+    a = sum(1 for seq in group1 if len(seq) > position and seq[position+1] == nucleotide)
+    b = sum(1 for seq in group1 if len(seq) > position and seq[position+1] != nucleotide)
+    
+    # Count occurrences in group 2
+    c = sum(1 for seq in group2 if len(seq) > position and seq[position+1] == nucleotide)
+    d = sum(1 for seq in group2 if len(seq) > position and seq[position+1] != nucleotide)
+
+    # Perform Fisher's exact test
+    p_value = fisher_exact_test(a, b, c, d)
+    
+    return a, b, c, d, p_value
