@@ -696,14 +696,59 @@ def perform_fishers_test(group1: list, group2: list, position: int, nucleotide: 
     """
     
     # Count occurrences in group 1
-    a = sum(1 for seq in group1 if len(seq) > position and seq[position+1] == nucleotide)
-    b = sum(1 for seq in group1 if len(seq) > position and seq[position+1] != nucleotide)
+    a = sum(1 for seq in group1 if len(seq) > position and seq[position-1] == nucleotide)
+    b = sum(1 for seq in group1 if len(seq) > position and seq[position-1] != nucleotide)
     
     # Count occurrences in group 2
-    c = sum(1 for seq in group2 if len(seq) > position and seq[position+1] == nucleotide)
-    d = sum(1 for seq in group2 if len(seq) > position and seq[position+1] != nucleotide)
+    c = sum(1 for seq in group2 if len(seq) > position and seq[position-1] == nucleotide)
+    d = sum(1 for seq in group2 if len(seq) > position and seq[position-1] != nucleotide)
 
     # Perform Fisher's exact test
     p_value = fisher_exact_test(a, b, c, d)
     
     return a, b, c, d, p_value
+
+
+def count_nucleotide(spacers: list, position: int) -> t.Dict[str, int]:
+    """
+    Calculate the nucleotide counts at a specific position across a list of spacer sequences.
+    
+    Args:
+        spacers (list): List of spacer sequences.
+        position (int): The position to check (0-based index).
+    
+    Returns:
+        Dict[str, int]: A dictionary with nucleotide counts at the specified position.
+    """
+    
+    counts = {'A': 0, 'C': 0, 'G': 0, 'U': 0}
+    
+    for seq in spacers:
+        if len(seq) > position-1:
+            nucleotide = seq[position-1]
+            if nucleotide in counts:
+                counts[nucleotide] += 1
+    
+    return counts
+
+def count_nucleotide_freq(spacers: list, position: int) -> t.Dict[str, float]:
+    """
+    Calculate the nucleotide frequencies at a specific position across a list of spacer sequences.
+    
+    Args:
+        spacers (list): List of spacer sequences.
+        position (int): The position to check (0-based index).
+    
+    Returns:
+        Dict[str, float]: A dictionary with nucleotide frequencies at the specified position.
+    """
+    
+    counts = count_nucleotide(spacers, position)
+    total = sum(counts.values())
+    
+    if total == 0:
+        return {nt: 0.0 for nt in counts}
+    
+    freqs = {nt: round(count / total, 4) for nt, count in counts.items()}
+    
+    return freqs

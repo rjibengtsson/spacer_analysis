@@ -383,7 +383,29 @@ def _retrieve_repeats():
 
 
 
+def _get_spacer_seqs():
+    fasta_file = "/spacers_db/crispr-cas-atlas/cas13b_all.faa.filtered.faa"
+    json_file = "/spacers_db/crispr-cas-atlas/crispr-cas-atlas-v1.0-VI.jsonl"
+    accession_list = "/home/unimelb.edu.au/rbengtsson/work/spacer_analysis/tmp.list"
 
-# if __name__ == "__main__":
-#     _retrieve_spacers()
+    accessions = [line.strip() for line in open(accession_list)]
+
+    spacer_list, spacer_dict = retrieve_spacers(accn_list=accessions, json_file=json_file)
+
+    for operon_id, n_spacers in spacer_dict.items():
+        for biosample_id, spacers in n_spacers.items():
+            print(operon_id)
+            for spacer in spacers:
+                print(spacer)
+            print("\n")
+            # corrected_spacers = ah.correct_spacer_sequence(spacers, consensus_list)
+            # final_spacers_list.extend(corrected_spacers)
+
+
+
+
+
+if __name__ == "__main__":
+    _get_spacer_seqs()
+    # _retrieve_spacers()
     # _retrieve_repeats()
