@@ -276,8 +276,19 @@ def find_matches(consensus_list: t.List[str], long_seq: str) -> bool:
 
 
 def generate_spacer_consensus(spacer_list: t.List[str]) -> t.List[str]:
-    u = {s for s in spacer_list if s and len(s) <= 36 }
-    return list({min(s, reverse_complement(s)) for s in u})
+    seen_keys = []
+
+    u = [s for s in spacer_list if s != '' and len(s) <= 36]
+
+    for s in u:
+        rc = reverse_complement(s)
+        if rc in u:
+            pass
+        else:
+            seen_keys.append(s)
+    
+    return seen_keys
+    # return list({min(s, reverse_complement(s)) for s in u})
 
 
 def correct_spacer_sequence(spacer_list: t.List[str], consensus_list: t.List[str]) -> t.List[str]:

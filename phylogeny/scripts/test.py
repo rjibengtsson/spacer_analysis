@@ -39,6 +39,29 @@ def assembly_type_counter(infile: str):
             print(f"{at_type}: {count}")
             
 
+def fetch_spacer_seqs(bioaccn_list: t.List[str], json_file: str) -> t.List[str]:
+    spacer_list = []
+
+    with open(json_file, 'rb') as inf:
+        for line in inf:
+            line = line.strip()
+            if not line:
+                continue
+            obj = json.loads(line)
+            biosample_id = obj.get("metadata", {}).get("biosample_id")
+            if biosample_id in bioaccn_list:
+                spacers = obj.get("crispr", {})[0].get("crispr_spacers")
+                print(biosample_id, "\t", len(spacers)-1)
+                for spacer in spacers:
+                    # print(spacer)
+                    print(reverse_complement(spacer))
+
+            # spacer_list.extend(spacers)
+
+    return spacer_list
+
+
+
 
 
 def reverse_complement(seq: str) -> str:
@@ -231,29 +254,35 @@ def position_nucleotide_freq(gRNA_seqs: t.List[str], nucleotide: str) -> t.Dict[
 def main():
     cluster_file = "/spacers_db/crispr-cas-atlas/cd-hit_all/db_90.clstr"
     json_file = "/spacers_db/crispr-cas-atlas/crispr-cas-atlas-v1.0-VI.jsonl"
-    cluster_dict = extract_from_cdhit_cluster(cluster_file)
+
+    bioaccn_list = ["SAMEA104224811"]
+
+    fetch_spacer_seqs(bioaccn_list, json_file)
+
+
+    # cluster_dict = extract_from_cdhit_cluster(cluster_file)
     
-    nucleotide = 'U'
+    # nucleotide = 'U'
 
-    colour_dict = {"A": "#008000",
-                "U": "#FF0000",
-                "G": "#ffa100",
-                "C": "#0000ff"}
+    # colour_dict = {"A": "#008000",
+    #             "U": "#FF0000",
+    #             "G": "#ffa100",
+    #             "C": "#0000ff"}
 
-    # keep only clusters with >= 10 members
-    new_dict = {k: v for k, v in cluster_dict.items() if len(v) >= 10}
+    # # keep only clusters with >= 10 members
+    # new_dict = {k: v for k, v in cluster_dict.items() if len(v) >= 10}
     
-    results_dict = {}
+    # results_dict = {}
 
-    # # collect rows first (faster than repeated concat)
-    rows = []
-    for key, val in new_dict.items():
-        gRNA_seqs = retrieve_guides(val, json_file)
-        if not gRNA_seqs:
-            continue
-        new_row = position_nucleotide_freq(gRNA_seqs, nucleotide=nucleotide)  # should return 30 values
-        print(new_row)
-        exit(0)
+    # # # collect rows first (faster than repeated concat)
+    # rows = []
+    # for key, val in new_dict.items():
+    #     gRNA_seqs = retrieve_guides(val, json_file)
+    #     if not gRNA_seqs:
+    #         continue
+    #     new_row = position_nucleotide_freq(gRNA_seqs, nucleotide=nucleotide)  # should return 30 values
+    #     print(new_row)
+    #     exit(0)
         # rows.append(new_row)
 
 
