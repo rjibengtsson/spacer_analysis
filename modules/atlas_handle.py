@@ -7,6 +7,8 @@ import os, sys
 import re
 import typing as t
 from pathlib import Path
+from modules.analysis_utils import get_gRNA_seq
+
 
 
 
@@ -224,10 +226,11 @@ def retrieve_spacers(accn_list: t.List[str], json_file:str) -> t.List[str]:
             obj = json.loads(line)
             if obj.get("operon_id") in operon_ids:
                 spacers = obj.get("crispr", {})[0].get("crispr_spacers")
-                spacer_list.extend(spacers)
+                cleaned_spacers = [x for x in spacers if x]
+                spacer_list.extend(cleaned_spacers)
                 # generate crispr array dictionary
                 crispr_dict = {}
-                crispr_dict[obj.get("metadata", {}).get("biosample_id")] = spacers
+                crispr_dict[obj.get("metadata", {}).get("biosample_id")] = cleaned_spacers
                 spacer_dict[obj.get("operon_id")] = crispr_dict
                 
 
@@ -278,14 +281,17 @@ def find_matches(consensus_list: t.List[str], long_seq: str) -> bool:
 def generate_spacer_consensus(spacer_list: t.List[str]) -> t.List[str]:
     seen_keys = []
 
-    u = [s for s in spacer_list if s != '' and len(s) <= 36]
+    filtered_list = [s for s in spacer_list if s != '' and len(s) <= 36]
 
-    for s in u:
-        rc = reverse_complement(s)
-        if rc in u:
+    for s in filtered_list:
+        if s in seen_keys:
             pass
         else:
-            seen_keys.append(s)
+            rc = reverse_complement(s)
+            if rc in seen_keys:
+                pass
+            else:
+                seen_keys.append(s)
     
     return seen_keys
     # return list({min(s, reverse_complement(s)) for s in u})
@@ -414,9 +420,8 @@ def _get_spacer_seqs():
 
 
 
-
-
-if __name__ == "__main__":
-    _get_spacer_seqs()
+# if __name__ == "__main__":
+#     main()    pass
+    # _get_spacer_seqs()
     # _retrieve_spacers()
     # _retrieve_repeats()

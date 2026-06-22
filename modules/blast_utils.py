@@ -86,7 +86,7 @@ class PhageBlast:
     spacerhost: Optional[str] = None
     phage_id: Optional[str] = None
     pident: Optional[float] = None
-    spacerlength: Optional[int] = None
+    # spacerlength: Optional[int] = None
     algn_length: Optional[int] = None
     mismatch: Optional[int] = None
     gapopen: Optional[int] = None

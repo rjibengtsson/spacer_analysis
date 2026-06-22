@@ -1,0 +1,36 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../../../spacers_db/crispr-cas-atlas/postgresql"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"ssh": "Disabled",
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"name": "crisprcas_atlas_db",
+				"database": "crisprcas_atlas",
+				"username": "rjbengtsson",
+				"password": "Unimelb1988!"
+			},
+			{
+				"ssh": "Disabled",
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"database": "phagescope",
+				"username": "rjbengtsson",
+				"password": "Unimelb1988!",
+				"name": "localhost"
+			}
+		]
+	}
+}
