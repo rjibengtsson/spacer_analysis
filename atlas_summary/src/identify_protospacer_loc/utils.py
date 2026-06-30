@@ -12,7 +12,7 @@ import pandas as pd
 import typing as t
 from typing import Optional
 import subprocess
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, bindparam
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -90,7 +90,7 @@ def get_terminase_features(phage_ids: tuple, output_dir: Path) -> Path:
             f.product ILIKE '%terminase%'
             OR f.product ~* '\mterl\M'
         )
-    """)
+    """).bindparams(bindparam("phage_ids", expanding=True))
 
     database = "phagescope"
     credentials = get_db_credentials()
@@ -102,7 +102,7 @@ def get_terminase_features(phage_ids: tuple, output_dir: Path) -> Path:
     )
 
     with engine.connect() as conn:
-        result = pd.read_sql(query, conn, params={"phage_ids": phage_ids})
+        result = pd.read_sql(query, conn, params={"phage_ids": list(phage_ids)})
 
     output_file = output_dir / "terminase_features.csv"
     result.to_csv(output_file, index=False)
@@ -228,18 +228,26 @@ class PhageBlast:
 
 
 
-def filter_results(input_file: Path, pident_threshold: float, cov_perc_threshold: float) -> pd.DataFrame:
+def filter_blastn_result(input_file: Path) -> pd.DataFrame:
     """
     Filter results based on various thresholds and selection criteria.
     """
 
-    phage_completeness = 'High-quality'
-
-
-
     df = pd.read_csv(input_file)
 
-    filtered_df = df[(df['pident'] >= pident_threshold) & (df['algn_length'] / df['phagelength'] * 100 >= cov_perc_threshold)]
+
+    best = (
+        filtered_df
+        .groupby('sequence_id', as_index=False)
+        .agg(best_bitscore=('bitscore', 'max'), best_evalue=('evalue', 'min'))
+    )
+
+    filtered_df = filtered_df.merge(best, on='sequence_id')
+    filtered_df = filtered_df[
+        (filtered_df['bitscore'] == filtered_df['best_bitscore']) &
+        (filtered_df['evalue'] == filtered_df['best_evalue'])
+    ].drop(columns=['best_bitscore', 'best_evalue'])
+
     return filtered_df
 
 

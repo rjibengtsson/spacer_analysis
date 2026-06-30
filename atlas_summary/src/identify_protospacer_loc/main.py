@@ -6,7 +6,7 @@ to Phagescope database to identify protospacer region.
 from concurrent.futures import ProcessPoolExecutor
 import pandas as pd
 from pathlib import Path
-from utils import extract_data_from_database, blast_search_batch, PhageBlast, get_terminase_features
+from utils import extract_data_from_database, blast_search_batch, PhageBlast, get_terminase_features, reorient_coordinates
 
 
 
@@ -104,7 +104,34 @@ def main():
     phage_hits_df = pd.read_csv(phage_hits_file)
     phage_ids = tuple(phage_hits_df['phage_id'].unique())
     terminase_output_dir = Path("/home/unimelb.edu.au/rbengtsson/work/spacer_analysis/atlas_summary/outputs/")
-    get_terminase_features(phage_ids[:20], terminase_output_dir)
+    # phage_ids_tmp = tuple(['Han_2018_ERR1398082_NODE_13_length_96793_cov_101.246098'])
+    # get_terminase_features(phage_ids, terminase_output_dir)
+    
+
+    ### Merge terminase and blastn results
+    terminase_file = terminase_output_dir / "terminase_features.csv"
+    terminase_df = pd.read_csv(terminase_file)
+
+    blastn_file = result_output_dir / "cas13b_spacer_blastn_results_raw.csv"
+    blastn_df = pd.read_csv(blastn_file)
+
+    merged = blastn_df.merge(terminase_df, on='phage_id', how='left')
+    merged = merged.dropna(subset=['product'])
+
+    ### reorient protospacer location relative to terminase start
+    merged['reoriented_phagestart'] = merged.apply(
+        lambda row: reorient_coordinates(row['phagestart'], row['start'], row['phagelength']),
+        axis=1
+    )
+    merged['reoriented_phageend'] = merged.apply(
+        lambda row: reorient_coordinates(row['phageend'], row['start'], row['phagelength']),
+        axis=1
+    )
+
+    ### save merged results with reoriented coordinates
+    merged_output_file = result_output_dir / "cas13b_spacer_blastn_results.csv"
+    merged.to_csv(merged_output_file, index=False)
+
 
 
 

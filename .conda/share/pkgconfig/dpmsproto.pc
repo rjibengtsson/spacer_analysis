@@ -1,0 +1,7 @@
+prefix=/home/unimelb.edu.au/rbengtsson/work/spacer_analysis/.conda
+includedir=${prefix}/include
+
+Name: DPMSProto
+Description: DPMS extension headers
+Version: 1.2
+Cflags: -I${includedir}

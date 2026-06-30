@@ -1,0 +1,7 @@
+prefix=/home/unimelb.edu.au/rbengtsson/work/spacer_analysis/.conda
+includedir=${prefix}/include
+
+Name: RenderProto
+Description: Render extension headers
+Version: 0.11.1
+Cflags: -I${includedir}
