@@ -24,3 +24,7 @@ This folder handles the ETL pipeline from the CRISPR-Cas Atlas JSONL source file
     - `utils.py` — Utility functions for database queries, BLASTN execution, parsing BLAST output into structured records, fetching phage terminase features, and reorienting genomic coordinates.
 - **`sql/`** — SQL assets including schema definitions, queries, views, indexes, and stored functions.
 
+## Database Schema
+
+![CRISPR-Cas Atlas Entity-Relationship Diagram](crisprcas_atlas_erd.png)
+
