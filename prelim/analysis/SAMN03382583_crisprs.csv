@@ -1,3 +1,0 @@
-array_id,biosampleaccn,contig_id,arraystart,arrayend,arraylen,avgrepeatlen,avgspacerlen,number_of_spacers,spacer_len_var,dist_to_cas13b,orientation,category,score,filter,date,organism,speciesname
-4e402131-687f-4dfb-adc3-1c60c89c93f0,SAMN03382583,NZ_CP010992.1,755586,757197,1612,36,29,24,0.4815,523641,Forward,Possible,0.6586,FAILED,29-07-2025-17-02-56,Flavobacterium columnare (CFB group bacteria),Flavobacterium columnare
-204ac2c3-7842-4f97-b299-8b3cb14d68d7,SAMN03382583,NZ_CP010992.1,1284454,1285538,1085,36,29,16,0.5123,137,Forward,Possible,0.7410,PASSED,29-07-2025-17-02-56,Flavobacterium columnare (CFB group bacteria),Flavobacterium columnare

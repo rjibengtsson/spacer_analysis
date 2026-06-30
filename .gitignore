@@ -24,8 +24,6 @@ atlas_summary/outputs
 # Ignore the following inside abacbs2025/
 abacbs2025/data
 
-# Ignore phage data files
-phage/
 
 # Ignore the following inside phylogeny folder
 phylogeny/BzCas13b.fasta
