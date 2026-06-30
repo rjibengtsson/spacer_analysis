@@ -1,16 +1,12 @@
 name: modules
 channels:
-  - conda-forge
-  - bioconda
   - defaults
 dependencies:
-  - python=3.10
-  - blast=2.14.0
-  - pandas
-  - numpy
+  - bioconda::mafft
   - biopython
   - matplotlib
-  - logomaker
-  - plotnine
-  - sqlite=3.45.3
-  
+  - blast=2.14.0
+  - numpy
+  - ipykernel
+  - bedtools
+prefix: /home/unimelb.edu.au/rbengtsson/miniconda3/envs/modules

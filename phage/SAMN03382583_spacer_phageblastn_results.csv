@@ -1,0 +1,2 @@
+,sequence_id,spacerhost,phage_id,pidenty,algn_length,mismatch,phagestart,phageend,phagelength,evalue,bitscore,phagecg,phagetaxonomy,phagecompleteness,phagehost,phagelifestyle,phagesource,pident,completeness,lifestyle
+0,395f8549-8b33-4ca3-aafd-32022bc5c845,Flavobacterium columnare,NC_041845.1,,29,0,42979,42951,46450,1.15e-06,58.0,29.82346609257266,Caudovirales,,Flavobacterium columnare,,REFSEQ,100.0,High-quality,virulent
