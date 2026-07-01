@@ -20,6 +20,7 @@ tools/cdhit
 atlas_summary/db_credentials.json
 atlas_summary/data
 atlas_summary/outputs
+atlas_summary/sql/daily_challenges
 
 # Ignore the following inside abacbs2025/
 abacbs2025/data
