@@ -1,7 +1,0 @@
-prefix=/home/unimelb.edu.au/rbengtsson/work/spacer_analysis/.conda
-includedir=${prefix}/include
- 
-Name: DRI2Proto
-Description: DRI2 extension headers
-Version: 2.8
-Cflags: -I${includedir}
